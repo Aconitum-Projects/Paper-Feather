@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlaceHolder
+  m_Name: Checker
   m_Shader: {fileID: -6465566751694194690, guid: f85c29a8c63635441b8a2f25e2e4e562, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -41,15 +41,16 @@ Material:
     - _Add_Lines: 1
     - _Checker: 1
     - _CheckerSize: 10
-    - _Grid_Lighter_Factor: 0.3
-    - _Lines_Size: 0.1
+    - _Displacement: -0.05
+    - _Grid_Lighter_Factor: 0.25
+    - _Lines_Size: 0.2
     - _NormalStrenght: 0.1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Size: 10
     m_Colors:
-    - _Color1: {r: 1, g: 1, b: 1, a: 1}
-    - _Color2: {r: 0, g: 0, b: 0, a: 1}
+    - _Color1: {r: 0.8283019, g: 0.9322678, b: 1, a: 1}
+    - _Color2: {r: 0.060640775, g: 0.060661077, b: 0.19245279, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3493395228052306452
