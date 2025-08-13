@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Checker
-  m_Shader: {fileID: -6465566751694194690, guid: f85c29a8c63635441b8a2f25e2e4e562, type: 3}
+  m_Name: Checker Test
+  m_Shader: {fileID: -6465566751694194690, guid: 3339148352a97474cbd6537d933fdfe9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -24,14 +24,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Triplanar_2df7423d56ef45ab822babfbb2576464_Texture_1_Texture2D:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Triplanar_4c614ff34c904fe7b06f48e07fae5589_Texture_1_Texture2D:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -46,23 +38,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Lighter_Factor: 0.3
-    - _Lines_Size: 0.05
-    - _Main_Color_Metalness: 0.1
-    - _Main_Smoothness: 0.7
-    - _Noise_Scale: 300
-    - _Noise_Smoothness: 0.1
-    - _Noise_Strenght: 0.7
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Second_Color_Metalness: 0.2
     - _Size: 20
-    m_Colors:
-    - _Main_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Second_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _Weight_1: 0
+    m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &3493395228052306452
+--- !u!114 &3931655909327380525
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
