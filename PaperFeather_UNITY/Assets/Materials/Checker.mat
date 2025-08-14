@@ -24,14 +24,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Triplanar_2df7423d56ef45ab822babfbb2576464_Texture_1_Texture2D:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Triplanar_4c614ff34c904fe7b06f48e07fae5589_Texture_1_Texture2D:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -46,20 +38,21 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Lighter_Factor: 0.3
-    - _Lines_Size: 0.05
-    - _Main_Color_Metalness: 0.1
-    - _Main_Smoothness: 0.7
-    - _Noise_Scale: 300
-    - _Noise_Smoothness: 0.1
+    - _Lighter_Factor: 0.6
+    - _Lines_Size: 0
+    - _Main_Color_Metalness: 0.4
+    - _Main_Smoothness: 0.6
+    - _Noise_Scale: 10
+    - _Noise_Smoothness: 0.2
     - _Noise_Strenght: 0.7
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Second_Color_Metalness: 0.2
-    - _Size: 20
+    - _Second_Color_Metalness: 0.6
+    - _Size: 1
+    - _Triplanar_Factor: 0
     m_Colors:
     - _Main_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Second_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _Second_Color: {r: 0.4, g: 0.4, b: 0.4, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3493395228052306452
