@@ -1,40 +1,64 @@
+using Cinemachine;
 using UnityEngine;
 using DG.Tweening;
 
 public class InteractableController : MonoBehaviour
 {
     [Header("UI")]
-    public CanvasGroup uiCanvasGroup; // Pour gérer l'opacité
-    public RectTransform uiRectTransform; // Pour le scale
-    public Camera mainCamera; // Référence à la caméra (si vide, on prendra Camera.main)
+    public CanvasGroup uiCanvasGroup;
+    public RectTransform uiRectTransform;
+    public Camera mainCamera;
 
+    [Space(20)]
     [Header("Animation")]
     public float showScale = 1f;
     public float hideScale = 0f;
     public float animDuration = 0.3f;
     public Ease animEase = Ease.OutBack;
 
+    [Space(20)]
+    [Header("Interaction")]
+    public KeyCode interactKey = KeyCode.E;
+    public DialogueSequence dialogueToStart;
+
+    [Space(20)]
     private bool uiVisible = false;
 
     private void Start()
     {
+
         if (mainCamera == null)
             mainCamera = Camera.main;
 
-        // On s'assure que c'est caché au début
         uiRectTransform.localScale = Vector3.one * hideScale;
         uiCanvasGroup.alpha = 0f;
         uiCanvasGroup.interactable = false;
         uiCanvasGroup.blocksRaycasts = false;
     }
 
+    private void Update()
+    {
+        if (uiVisible && Input.GetKeyDown(interactKey))
+        {
+            DialogueManager dm = FindObjectOfType<DialogueManager>();
+            
+            if (dm != null)
+            {
+                dm.StartDialogue(dialogueToStart);
+            }
+            else
+            {
+                Debug.LogWarning("Aucun DialogueManager trouvé dans la scène !");
+            }
+        }
+    }
+
     private void LateUpdate()
     {
-        // Si l'UI est visible, on la tourne vers la caméra
         if (uiVisible)
         {
             Vector3 lookPos = mainCamera.transform.position;
-            lookPos.y = uiRectTransform.position.y; // Bloque la rotation sur l'axe X
+            lookPos.y = uiRectTransform.position.y;
             uiRectTransform.LookAt(lookPos);
         }
     }

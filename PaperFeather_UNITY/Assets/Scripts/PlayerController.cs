@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TopDownPlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Déplacement")]
     public float moveSpeed = 5f;
@@ -14,8 +14,8 @@ public class TopDownPlayerController : MonoBehaviour
     public KeyCode interactKey = KeyCode.E;
 
     [Header("Physique Saut")]
-    [SerializeField] private float riseMultiplier = 1.5f; // Gravité plus forte en montée
-    [SerializeField] private float fallMultiplier = 2.5f; // Gravité plus forte en descente
+    [SerializeField] private float riseMultiplier = 1.5f;
+    [SerializeField] private float fallMultiplier = 2.5f;
 
     private Rigidbody rb;
     private int jumpCount;
@@ -32,23 +32,19 @@ public class TopDownPlayerController : MonoBehaviour
 
     void Update()
     {
-        // Inputs
         rotationInput = Input.GetAxisRaw("Horizontal");
         moveInput = Input.GetAxisRaw("Vertical");
 
-        // Rotation
         transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime);
 
-        // Saut + double saut
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
             Vector3 vel = rb.linearVelocity;
-            vel.y = jumpForce; // instantané
+            vel.y = jumpForce;
             rb.linearVelocity = vel;
             jumpCount++;
         }
 
-        // Interaction
         if (canInteract && Input.GetKeyDown(interactKey))
         {
             Debug.Log("Interaction déclenchée !");
@@ -57,16 +53,14 @@ public class TopDownPlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Déplacement
         Vector3 move = transform.forward * moveInput * moveSpeed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + move);
 
-        // Ajuste la gravité pour montée et descente
-        if (rb.linearVelocity.y > 0) // en montée
+        if (rb.linearVelocity.y > 0)
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (riseMultiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.linearVelocity.y < 0) // en descente
+        else if (rb.linearVelocity.y < 0)
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
