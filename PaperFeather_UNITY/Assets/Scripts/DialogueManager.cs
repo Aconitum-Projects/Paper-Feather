@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using DG.Tweening;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -11,9 +12,15 @@ public class DialogueManager : MonoBehaviour
     public Image speakerImage;
     public GameObject choicesContainer;
     public GameObject choiceButtonPrefab;
-
+    
+    [Header("Panels")]
+    public CanvasGroup namePanel;
+    public CanvasGroup dialoguePanel;
+    public Ease animEase = Ease.OutBack;
+    
     [Header("Settings")]
     public float typeSpeed = 0.03f;
+    public float fadeDuration = 0.3f;
     public KeyCode nextLineKey = KeyCode.R;
 
     private DialogueSequence currentSequence;
@@ -23,16 +30,75 @@ public class DialogueManager : MonoBehaviour
     private bool inBranch = false;
     private DialogueLine[] branchLines;
     private int branchIndex;
-    private int returnMainIndex; // où revenir dans le main après la branch
+    private int returnMainIndex;
 
     private bool isTyping;
     private Coroutine typingCoroutine;
+    private Sprite previousSprite;
 
+    void Start()
+    {
+        if (namePanel != null)
+        {
+            namePanel.alpha = 0f;
+            namePanel.interactable = false;
+            namePanel.blocksRaycasts = false;
+        }
+        if (dialoguePanel != null)
+        {
+            dialoguePanel.alpha = 0f;
+            dialoguePanel.interactable = false;
+            dialoguePanel.blocksRaycasts = false;
+        }
+
+        if (speakerImage != null)
+        {
+            speakerImage.rectTransform.localScale = new Vector3(1f, 0f, 1f);
+        }
+    }
+    
     public void StartDialogue(DialogueSequence sequence)
     {
         currentSequence = sequence;
         currentLineIndex = 0;
         inBranch = false;
+
+        Vector2 offscreenPos = new Vector2(-4000f, 0f);
+        if (namePanel != null)
+        {
+            namePanel.alpha = 0f;
+            namePanel.interactable = false;
+            namePanel.blocksRaycasts = false;
+            namePanel.GetComponent<RectTransform>().anchoredPosition = offscreenPos;
+
+            Sequence nameSeq = DOTween.Sequence();
+            nameSeq.Append(namePanel.DOFade(1f, fadeDuration));
+            nameSeq.Join(namePanel.GetComponent<RectTransform>().DOAnchorPos(Vector2.zero, fadeDuration).SetEase(animEase));
+            nameSeq.OnStart(() =>
+            {
+                namePanel.interactable = true;
+                namePanel.blocksRaycasts = true;
+            });
+            nameSeq.Play();
+        }
+        if (dialoguePanel != null)
+        {
+            dialoguePanel.alpha = 0f;
+            dialoguePanel.interactable = false;
+            dialoguePanel.blocksRaycasts = false;
+            dialoguePanel.GetComponent<RectTransform>().anchoredPosition = offscreenPos;
+
+            Sequence dialogueSeq = DOTween.Sequence();
+            dialogueSeq.Append(dialoguePanel.DOFade(1f, fadeDuration));
+            dialogueSeq.Join(dialoguePanel.GetComponent<RectTransform>().DOAnchorPos(Vector2.zero, fadeDuration).SetEase(animEase));
+            dialogueSeq.OnStart(() =>
+            {
+                dialoguePanel.interactable = true;
+                dialoguePanel.blocksRaycasts = true;
+            });
+            dialogueSeq.Play();
+        }
+
         DisplayCurrent();
     }
 
@@ -48,7 +114,19 @@ public class DialogueManager : MonoBehaviour
         if (line == null) return;
 
         speakerNameText.text = line.speakerName;
-        speakerImage.sprite = line.speakerSprite;
+
+        if (speakerImage.sprite != line.speakerSprite)
+        {
+            speakerImage.sprite = line.speakerSprite;
+
+            RectTransform spriteRect = speakerImage.GetComponent<RectTransform>();
+            spriteRect.localScale = new Vector3(1f, 0f, 1f);
+            speakerImage.color = new Color(1f, 1f, 1f, 1f);
+
+            spriteRect.DOScaleY(1f, fadeDuration).SetEase(animEase);
+        }
+
+        previousSprite = line.speakerSprite;
 
         if (typingCoroutine != null)
             StopCoroutine(typingCoroutine);
@@ -60,6 +138,7 @@ public class DialogueManager : MonoBehaviour
         else
             choicesContainer.SetActive(false);
     }
+
 
     DialogueLine GetCurrentLine()
     {
@@ -81,11 +160,32 @@ public class DialogueManager : MonoBehaviour
     {
         isTyping = true;
         dialogueText.text = "";
-        foreach (char c in text)
+
+        bool insideTag = false;
+
+        for (int i = 0; i < text.Length; i++)
         {
+            char c = text[i];
+
+            if (c == '<')
+            {
+                insideTag = true;
+            }
+            if (insideTag)
+            {
+                dialogueText.text += c;
+                if (c == '>')
+                {
+                    insideTag = false;
+                }
+                continue;
+            }
+
             dialogueText.text += c;
+
             yield return new WaitForSeconds(typeSpeed);
         }
+
         isTyping = false;
     }
 
@@ -104,7 +204,6 @@ public class DialogueManager : MonoBehaviour
 
             Button btn = btnObj.GetComponent<Button>();
 
-            // capture locale pour éviter problème de closure
             DialogueChoice captured = choice;
             btn.onClick.AddListener(() => OnChoiceSelected(captured));
         }
@@ -112,19 +211,16 @@ public class DialogueManager : MonoBehaviour
 
     void OnChoiceSelected(DialogueChoice choice)
     {
-        // stoppe typing en cours et affiche la première ligne de la branch immédiatement
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         isTyping = false;
 
         choicesContainer.SetActive(false);
 
-        // sauvegarde où revenir dans le main (la ligne après celle qui contenait les choix)
         if (!inBranch)
             returnMainIndex = currentLineIndex + 1;
         else
-            returnMainIndex = currentLineIndex + 1; // si nested, on simplifie: revient au main après la branch
+            returnMainIndex = currentLineIndex + 1;
 
-        // lance la branch
         branchLines = choice.branchLines ?? new DialogueLine[0];
         inBranch = true;
         branchIndex = 0;
@@ -132,13 +228,11 @@ public class DialogueManager : MonoBehaviour
         if (branchLines.Length > 0)
             DisplayCurrent();
         else
-            // si branch vide, on revient directement
             ExitBranch();
     }
 
     public void NextLine()
     {
-        // si on tape pendant le typewriter => affiche tout
         if (isTyping)
         {
             StopCoroutine(typingCoroutine);
@@ -180,7 +274,6 @@ public class DialogueManager : MonoBehaviour
         branchLines = null;
         branchIndex = 0;
 
-        // on revient à la ligne suivante du main
         currentLineIndex = returnMainIndex;
         if (currentSequence != null && currentLineIndex < currentSequence.lines.Length)
             DisplayCurrent();
@@ -190,7 +283,51 @@ public class DialogueManager : MonoBehaviour
 
     void EndDialogue()
     {
+        fadeDuration *= 2f;
+        
         Debug.Log("Dialogue terminé");
-        // ferme UI / notify etc.
+
+        Vector2 offscreenPos = new Vector2(-4000f, 0f);
+
+        if (namePanel != null)
+        {
+            Sequence nameSeq = DOTween.Sequence();
+            nameSeq.Append(namePanel.DOFade(0f, fadeDuration));
+            nameSeq.Join(namePanel.GetComponent<RectTransform>().DOAnchorPos(offscreenPos, fadeDuration).SetEase(animEase));
+            nameSeq.OnComplete(() =>
+            {
+                namePanel.interactable = false;
+                namePanel.blocksRaycasts = false;
+            });
+            nameSeq.Play();
+        }
+
+        if (dialoguePanel != null)
+        {
+            Sequence dialogueSeq = DOTween.Sequence();
+            dialogueSeq.Append(dialoguePanel.DOFade(0f, fadeDuration));
+            dialogueSeq.Join(dialoguePanel.GetComponent<RectTransform>().DOAnchorPos(offscreenPos, fadeDuration).SetEase(animEase));
+            dialogueSeq.OnComplete(() =>
+            {
+                dialoguePanel.interactable = false;
+                dialoguePanel.blocksRaycasts = false;
+            });
+            dialogueSeq.Play();
+        }
+
+        if (speakerImage != null)
+        {
+            RectTransform spriteRect = speakerImage.GetComponent<RectTransform>();
+    
+            Sequence spriteSeq = DOTween.Sequence();
+            spriteSeq.Append(speakerImage.DOFade(0f, fadeDuration));
+            spriteSeq.Join(spriteRect.DOScaleY(0f, fadeDuration).SetEase(animEase));
+            spriteSeq.Play();
+        }
+
+        if (choicesContainer != null)
+            choicesContainer.SetActive(false);
+        
+        fadeDuration /= 2f;
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lines:
   - speakerName: Prototype
-    text: Salut Giu !
+    text: Salut <color=#FFE282>Giu</color> !
     speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
     hasChoices: 0
     choices: []
@@ -75,7 +75,48 @@ MonoBehaviour:
     hasChoices: 0
     choices: []
   - speakerName: Prototype
-    text: FIN!
+    text: On va tester quelques trucs avec TMP.
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: 'Couleur : <color=#FFE282>On va tester quelques trucs avec TMP.</color>'
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: 'Gras : <b>On va tester quelques trucs avec TMP.</b>'
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: 'Italique : <i>On va tester quelques trucs avec TMP.</i>'
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: 'Taille : <size=300%>On va tester quelques trucs avec TMP.</size>'
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: 'Saut de ligne : <br>On va tester quelques trucs avec TMP. \nOn va tester
+      quelques trucs avec TMP.'
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: 'Espace : <space=100>On va tester quelques trucs avec TMP.'
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: "Soulign\xE9 : <u>On va tester quelques trucs avec TMP.</u>"
+    speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
+    hasChoices: 0
+    choices: []
+  - speakerName: Prototype
+    text: "Barr\xE9 : <s>On va tester quelques trucs avec TMP.</s>"
     speakerSprite: {fileID: 21300000, guid: 739bd777d72c06f4d9c5d1f7a3bdf84b, type: 3}
     hasChoices: 0
     choices: []
