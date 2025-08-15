@@ -39,9 +39,17 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
+            float appliedJumpForce = jumpForce;
+
+            if (jumpCount == 1)
+            {
+                appliedJumpForce *= 0.7f;
+            }
+
             Vector3 vel = rb.linearVelocity;
-            vel.y = jumpForce;
+            vel.y = appliedJumpForce;
             rb.linearVelocity = vel;
+
             jumpCount++;
         }
 

@@ -259,7 +259,7 @@ MonoBehaviour:
   animDuration: 0.4
   animEase: 14
   interactKey: 101
-  dialogueToStart: {fileID: 0}
+  dialogueToStart: {fileID: 11400000, guid: 1cb5c557afd857d40b0be852d3077058, type: 2}
 --- !u!65 &9163566217012578992
 BoxCollider:
   m_ObjectHideFlags: 0
