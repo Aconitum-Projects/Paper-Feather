@@ -2,24 +2,34 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Activation des actions")]
+    public bool canMove = true;
+    public bool canRotate = true;
+    public bool canJump = true;
+    public bool canDoInteraction = true;
+    
+    [Space(20)]
     [Header("Déplacement")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 180f;
 
+    [Space(20)]
     [Header("Saut")]
     public float jumpForce = 5f;
     public int maxJumps = 2;
 
+    [Space(20)]
     [Header("Interaction")]
     public KeyCode interactKey = KeyCode.E;
 
+    [Space(20)]
     [Header("Physique Saut")]
     [SerializeField] private float riseMultiplier = 1.5f;
     [SerializeField] private float fallMultiplier = 2.5f;
 
     private Rigidbody rb;
     private int jumpCount;
-    private bool canInteract = false;
+    private bool isInInteractZone = false;
 
     private float rotationInput;
     private float moveInput;
@@ -32,12 +42,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        rotationInput = Input.GetAxisRaw("Horizontal");
-        moveInput = Input.GetAxisRaw("Vertical");
+        rotationInput = canRotate ? Input.GetAxisRaw("Horizontal") : 0f;
+        moveInput = canMove ? Input.GetAxisRaw("Vertical") : 0f;
 
-        transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime);
+        if (canRotate)
+            transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
+        if (canJump && Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
             float appliedJumpForce = jumpForce;
 
@@ -52,8 +63,8 @@ public class PlayerController : MonoBehaviour
 
             jumpCount++;
         }
-
-        if (canInteract && Input.GetKeyDown(interactKey))
+        
+        if (canDoInteraction && isInInteractZone && Input.GetKeyDown(interactKey))
         {
             Debug.Log("Interaction déclenchée !");
         }
@@ -86,7 +97,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("InteractiveTrigger"))
         {
-            canInteract = true;
+            isInInteractZone = true;
         }
     }
 
@@ -94,7 +105,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("InteractiveTrigger"))
         {
-            canInteract = false;
+            isInInteractZone = false;
         }
     }
 }
