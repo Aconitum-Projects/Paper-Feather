@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Playables;
+
 
 public class JumpRope : MonoBehaviour
 {
@@ -20,12 +22,17 @@ public class JumpRope : MonoBehaviour
     [Header("Gameplay")]
     public int maxLives = 3;
     public float invulnerabilityTime = 1f;
+    public Material flashMat;
+    
+    [Header("Timeline de Game Over")]
+    public PlayableDirector gameOverTimeline;
 
     private float currentRotationSpeed;
     private float rotationProgress = 0f;
     private int completedTurns = 0;
     private int currentLives;
     private bool isInvulnerable = false;
+    private bool isGameOver = false;
 
     void Start()
     {
@@ -36,6 +43,8 @@ public class JumpRope : MonoBehaviour
 
     void Update()
     {
+        if (isGameOver) return;
+        
         rotationProgress += (Time.deltaTime * currentRotationSpeed) / 360f;
 
         if (rotationProgress >= 1f)
@@ -88,7 +97,34 @@ public class JumpRope : MonoBehaviour
     IEnumerator InvulnerabilityCooldown()
     {
         isInvulnerable = true;
-        yield return new WaitForSeconds(invulnerabilityTime);
+
+        GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+        if (player != null)
+        {
+            Renderer rend = player.GetComponentInChildren<Renderer>();
+            if (rend != null)
+            {
+                Material defaultMat = rend.material;
+                flashMat.color = Color.white;
+
+                float elapsed = 0f;
+                float blinkInterval = 0.1f;
+
+                while (elapsed < invulnerabilityTime)
+                {
+                    rend.material = flashMat;
+                    yield return new WaitForSeconds(blinkInterval);
+
+                    rend.material = defaultMat;
+                    yield return new WaitForSeconds(blinkInterval);
+
+                    elapsed += blinkInterval * 2;
+                }
+
+                rend.material = defaultMat;
+            }
+        }
+
         isInvulnerable = false;
     }
 
@@ -141,10 +177,49 @@ public class JumpRope : MonoBehaviour
             yield return null;
         }
     }
-
-
+    
     void GameOver()
     {
         Debug.Log("Game Over !");
+        isGameOver = true;
+
+        PlayerController playerCtrl = FindAnyObjectByType<PlayerController>();
+        if (playerCtrl != null)
+            playerCtrl.enabled = false;
+
+        StartCoroutine(SmoothStopRope());
+
+        if (gameOverTimeline != null)
+        {
+            gameOverTimeline.stopped += OnGameOverTimelineStopped;
+            gameOverTimeline.Play();
+        }
+        else
+        {
+            Debug.LogWarning("Pas de timeline assignée pour le Game Over !");
+        }
+    }
+
+    IEnumerator SmoothStopRope()
+    {
+        Quaternion startRot = transform.rotation;
+        Quaternion targetRot = Quaternion.Euler(180f, 0f, 0f);
+        float t = 0f;
+        float duration = 1f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(startRot, targetRot, t / duration);
+            yield return null;
+        }
+        transform.rotation = targetRot;
+    }
+
+    void OnGameOverTimelineStopped(UnityEngine.Playables.PlayableDirector director)
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 }

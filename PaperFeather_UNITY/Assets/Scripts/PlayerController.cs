@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fallMultiplier = 2.5f;
 
     private Rigidbody rb;
+    private Animator anim;
     private int jumpCount;
     private bool isInInteractZone = false;
 
@@ -38,6 +39,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -62,6 +65,8 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = vel;
 
             jumpCount++;
+
+            anim.SetBool("isJumping", true);
         }
         
         if (canDoInteraction && isInInteractZone && Input.GetKeyDown(interactKey))
@@ -90,6 +95,7 @@ public class PlayerController : MonoBehaviour
         if (collision.contacts[0].normal.y > 0.5f)
         {
             jumpCount = 0;
+            anim.SetBool("isJumping", false);
         }
     }
 

@@ -55,7 +55,7 @@ MonoBehaviour:
   maxJumpForce: 5
   minJumpInterval: 0.2
   maxJumpInterval: 2
-  extraGravity: 20
+  extraGravity: 16
 --- !u!1001 &4407701117089887939
 PrefabInstance:
   m_ObjectHideFlags: 0
