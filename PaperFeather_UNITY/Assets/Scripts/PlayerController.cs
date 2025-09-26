@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public bool canRotate = true;
     public bool canJump = true;
     public bool canDoInteraction = true;
+    public bool canCrouch = true;
     
     [Space(20)]
     [Header("Déplacement")]
@@ -27,6 +28,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float riseMultiplier = 1.5f;
     [SerializeField] private float fallMultiplier = 2.5f;
 
+    [Space(20)]
+    [Header("Crouch (accroupi)")]
+    public KeyCode crouchKey = KeyCode.LeftShift;
+    public float crouchScaleY = 0.5f;
+    private Vector3 originalScale;
+    private bool isCrouching = false;
+
     private Rigidbody rb;
     private Animator anim;
     private int jumpCount;
@@ -41,6 +49,8 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
 
         anim = GetComponent<Animator>();
+
+        originalScale = transform.localScale;
     }
 
     void Update()
@@ -51,27 +61,40 @@ public class PlayerController : MonoBehaviour
         if (canRotate)
             transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime);
 
+        
+        // --- Jump ---
         if (canJump && Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
             float appliedJumpForce = jumpForce;
 
             if (jumpCount == 1)
-            {
                 appliedJumpForce *= 0.7f;
-            }
 
             Vector3 vel = rb.linearVelocity;
             vel.y = appliedJumpForce;
             rb.linearVelocity = vel;
 
             jumpCount++;
-
             anim.SetBool("isJumping", true);
         }
-        
+
+        // --- Interaction ---
         if (canDoInteraction && isInInteractZone && Input.GetKeyDown(interactKey))
         {
             Debug.Log("Interaction déclenchée !");
+        }
+
+        // --- Crouch ---
+        if (canCrouch)
+        {
+            if (Input.GetKeyDown(crouchKey))
+            {
+                Crouch();
+            }
+            else if (Input.GetKeyUp(crouchKey))
+            {
+                StandUp();
+            }
         }
     }
 
@@ -113,5 +136,23 @@ public class PlayerController : MonoBehaviour
         {
             isInInteractZone = false;
         }
+    }
+    void Crouch()
+    {
+        if (isCrouching) return;
+        Vector3 newScale = new Vector3(originalScale.x, crouchScaleY, originalScale.z);
+        transform.localScale = newScale;
+        isCrouching = true;
+
+        if (anim != null) anim.SetBool("isCrouching", true);
+    }
+
+    void StandUp()
+    {
+        if (!isCrouching) return;
+        transform.localScale = originalScale;
+        isCrouching = false;
+
+        if (anim != null) anim.SetBool("isCrouching", false);
     }
 }

@@ -10,20 +10,20 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1219492209359942752, guid: 61a14734a7749be4da82cd3cb2358386, type: 3}
       propertyPath: m_Name
-      value: Ch_Flamin
+      value: Pan
       objectReference: {fileID: 0}
     - target: {fileID: 1416853126604802269, guid: 61a14734a7749be4da82cd3cb2358386, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 06bd035904ede5c40b0297589c169110, type: 2}
+      objectReference: {fileID: 2100000, guid: faf7f7a10395af544acedc3abc2344ae, type: 2}
     - target: {fileID: 2963004290600530985, guid: 61a14734a7749be4da82cd3cb2358386, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 06bd035904ede5c40b0297589c169110, type: 2}
+      objectReference: {fileID: 2100000, guid: faf7f7a10395af544acedc3abc2344ae, type: 2}
     - target: {fileID: 3134456924473013517, guid: 61a14734a7749be4da82cd3cb2358386, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 06bd035904ede5c40b0297589c169110, type: 2}
+      objectReference: {fileID: 2100000, guid: faf7f7a10395af544acedc3abc2344ae, type: 2}
     - target: {fileID: 7572532267021297339, guid: 61a14734a7749be4da82cd3cb2358386, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

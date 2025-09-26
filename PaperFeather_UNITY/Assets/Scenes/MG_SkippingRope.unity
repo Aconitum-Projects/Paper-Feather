@@ -666,6 +666,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2666220684883158147, guid: da346b09b1677f249b40034eca5a196c, type: 3}
+      propertyPath: canCrouch
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2666220684883158147, guid: da346b09b1677f249b40034eca5a196c, type: 3}
       propertyPath: canRotate
       value: 0
       objectReference: {fileID: 0}
