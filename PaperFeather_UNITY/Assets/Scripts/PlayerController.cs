@@ -55,63 +55,47 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        rotationInput = canRotate ? Input.GetAxisRaw("Horizontal") : 0f;
-        moveInput = canMove ? Input.GetAxisRaw("Vertical") : 0f;
-
         if (canRotate)
-            transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime);
+        {
+            float mouseX = Input.GetAxis("Mouse X");
+            transform.Rotate(Vector3.up, mouseX * rotationSpeed * Time.deltaTime);
+        }
 
-        
-        // --- Jump ---
+        moveInput = canMove ? Input.GetAxisRaw("Vertical") : 0f;
+        rotationInput = canMove ? Input.GetAxisRaw("Horizontal") : 0f;
+
         if (canJump && Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
         {
             float appliedJumpForce = jumpForce;
-
-            if (jumpCount == 1)
-                appliedJumpForce *= 0.7f;
-
+            if (jumpCount == 1) appliedJumpForce *= 0.7f;
             Vector3 vel = rb.linearVelocity;
             vel.y = appliedJumpForce;
             rb.linearVelocity = vel;
-
             jumpCount++;
             anim.SetBool("isJumping", true);
         }
 
-        // --- Interaction ---
         if (canDoInteraction && isInInteractZone && Input.GetKeyDown(interactKey))
-        {
             Debug.Log("Interaction déclenchée !");
-        }
 
-        // --- Crouch ---
         if (canCrouch)
         {
-            if (Input.GetKeyDown(crouchKey))
-            {
-                Crouch();
-            }
-            else if (Input.GetKeyUp(crouchKey))
-            {
-                StandUp();
-            }
+            if (Input.GetKeyDown(crouchKey)) Crouch();
+            else if (Input.GetKeyUp(crouchKey)) StandUp();
         }
     }
 
     void FixedUpdate()
     {
-        Vector3 move = transform.forward * moveInput * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(rb.position + move);
+        Vector3 move = transform.forward * moveInput + transform.right * rotationInput;
+        rb.MovePosition(rb.position + move * moveSpeed * Time.fixedDeltaTime);
 
         if (rb.linearVelocity.y > 0)
-        {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (riseMultiplier - 1) * Time.fixedDeltaTime;
-        }
         else if (rb.linearVelocity.y < 0)
-        {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
-        }
     }
+
 
     void OnCollisionEnter(Collision collision)
     {

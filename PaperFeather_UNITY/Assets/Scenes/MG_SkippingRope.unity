@@ -2344,6 +2344,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6631269351524420956, guid: 47afb7ffe5f721d4998963fee11a9cf4, type: 3}
+      propertyPath: extraGravity
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8195803600835797265, guid: 47afb7ffe5f721d4998963fee11a9cf4, type: 3}
       propertyPath: m_Name
       value: Crowd

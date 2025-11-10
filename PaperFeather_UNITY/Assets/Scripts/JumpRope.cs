@@ -101,28 +101,32 @@ public class JumpRope : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
         if (player != null)
         {
-            Renderer rend = player.GetComponentInChildren<Renderer>();
-            if (rend != null)
+            Renderer[] renderers = player.GetComponentsInChildren<Renderer>();
+            Material[] defaultMats = new Material[renderers.Length];
+
+            for (int i = 0; i < renderers.Length; i++)
+                defaultMats[i] = renderers[i].material;
+
+            float elapsed = 0f;
+            float blinkInterval = 0.1f;
+
+            while (elapsed < invulnerabilityTime)
             {
-                Material defaultMat = rend.material;
-                flashMat.color = Color.white;
+                for (int i = 0; i < renderers.Length; i++)
+                    renderers[i].material = flashMat;
 
-                float elapsed = 0f;
-                float blinkInterval = 0.1f;
+                yield return new WaitForSeconds(blinkInterval);
 
-                while (elapsed < invulnerabilityTime)
-                {
-                    rend.material = flashMat;
-                    yield return new WaitForSeconds(blinkInterval);
+                for (int i = 0; i < renderers.Length; i++)
+                    renderers[i].material = defaultMats[i];
 
-                    rend.material = defaultMat;
-                    yield return new WaitForSeconds(blinkInterval);
+                yield return new WaitForSeconds(blinkInterval);
 
-                    elapsed += blinkInterval * 2;
-                }
-
-                rend.material = defaultMat;
+                elapsed += blinkInterval * 2;
             }
+
+            for (int i = 0; i < renderers.Length; i++)
+                renderers[i].material = defaultMats[i];
         }
 
         isInvulnerable = false;

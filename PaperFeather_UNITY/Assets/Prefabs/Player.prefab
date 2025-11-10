@@ -345,13 +345,16 @@ MonoBehaviour:
   canRotate: 1
   canJump: 1
   canDoInteraction: 1
+  canCrouch: 1
   moveSpeed: 7
-  rotationSpeed: 160
+  rotationSpeed: 300
   jumpForce: 15
   maxJumps: 2
   interactKey: 101
   riseMultiplier: 5
   fallMultiplier: 5
+  crouchKey: 304
+  crouchScaleY: 0.5
 --- !u!54 &49882445617165705
 Rigidbody:
   m_ObjectHideFlags: 0
