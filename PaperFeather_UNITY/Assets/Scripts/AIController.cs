@@ -7,21 +7,23 @@ public class AIController : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
     public float crouchDuration = 1f;
-    public float swaySpeed = 3f;           // vitesse du sway
-    public float swayDuration = 1f;        // durée d'un mouvement latéral avant inversion
+    public float slideDistance = 2f;
+    public float slideSpeed = 3f;
 
     [Header("Detection")]
     public float rayDistance = 2f;
     public LayerMask obstacleLayer;
+
+    [Tooltip("Minimum height in front to trigger a jump")]
     public float obstacleHeightThreshold = 1.2f;
+
+    [Tooltip("Height from ground to check for low ceilings (for crouching)")]
     public float ceilingCheckHeight = 1.5f;
 
     private Rigidbody rb;
     private bool isCrouching = false;
     private bool isJumping = false;
-    private bool isSwaying = false;
-    private int swayDirection = 1;          // 1 = droite, -1 = gauche
-    private float swayTimer = 0f;
+    private bool isSliding = false;
 
     void Start()
     {
@@ -31,41 +33,44 @@ public class AIController : MonoBehaviour
 
     void Update()
     {
-        MoveForward();
-        DetectObstacleAndAct();
-        HandleSway();
+        if (!isSliding)
+        {
+            MoveForward();
+            DetectObstacleAndAct();
+        }
     }
 
     void MoveForward()
     {
-        Vector3 move = transform.forward * moveSpeed * Time.deltaTime;
-
-        // Si sway actif, ajouter mouvement latéral
-        if (isSwaying)
-            move += transform.right * swayDirection * swaySpeed * Time.deltaTime;
-
-        rb.MovePosition(rb.position + move);
+        rb.MovePosition(rb.position + transform.forward * moveSpeed * Time.deltaTime);
     }
 
     void DetectObstacleAndAct()
     {
-        if (isSwaying) return; // ne pas détecter d'obstacle pendant le sway
-
         RaycastHit hit;
 
+        // 🔴 Bas → obstacle sur le sol (jump)
         Vector3 lowRayOrigin = transform.position + Vector3.up * 0.3f;
         Debug.DrawRay(lowRayOrigin, transform.forward * rayDistance, Color.red);
 
+        // 🟢 Haut → obstacle suspendu (crouch)
         Vector3 highRayOrigin = transform.position + Vector3.up * ceilingCheckHeight;
         Debug.DrawRay(highRayOrigin, transform.forward * rayDistance, Color.green);
 
-        bool obstacleDetected = false;
+        // 🟣 Gauche et 🟡 Droite → pour vérifier s'il y a un passage libre
+        Vector3 leftRayOrigin = transform.position + Vector3.up * 1f;  // hauteur moyenne
+        Vector3 rightRayOrigin = transform.position + Vector3.up * 1f;
 
-        // Bas → obstacle au sol (jump)
+        Vector3 leftDir = (transform.forward - transform.right).normalized;
+        Vector3 rightDir = (transform.forward + transform.right).normalized;
+
+        Debug.DrawRay(leftRayOrigin, leftDir * rayDistance, Color.magenta);
+        Debug.DrawRay(rightRayOrigin, rightDir * rayDistance, Color.yellow);
+
+        // Si le rayon du bas touche → obstacle au sol
         if (Physics.Raycast(lowRayOrigin, transform.forward, out hit, rayDistance, obstacleLayer))
         {
             float obstacleHeight = hit.collider.bounds.size.y;
-            obstacleDetected = true;
 
             if (!isJumping && obstacleHeight > obstacleHeightThreshold)
             {
@@ -74,11 +79,9 @@ public class AIController : MonoBehaviour
             }
         }
 
-        // Haut → obstacle suspendu (crouch)
+        // Si le rayon du haut touche → obstacle suspendu
         if (Physics.Raycast(highRayOrigin, transform.forward, out hit, rayDistance, obstacleLayer))
         {
-            obstacleDetected = true;
-
             if (!isCrouching)
             {
                 StartCoroutine(Crouch());
@@ -86,11 +89,69 @@ public class AIController : MonoBehaviour
             }
         }
 
-        // Si bloqué (raycast détecte obstacle mais saut/crouch pas possible)
-        if (obstacleDetected && !isJumping && !isCrouching)
+        // Si bloqué → test gauche/droite
+        bool leftClear = !Physics.Raycast(leftRayOrigin, leftDir, rayDistance, obstacleLayer);
+        bool rightClear = !Physics.Raycast(rightRayOrigin, rightDir, rayDistance, obstacleLayer);
+
+        if (!leftClear && !rightClear)
+            return; // coincé de partout
+
+        if (leftClear)
+            SlideSide(-1);
+        else if (rightClear)
+            SlideSide(1);
+    }
+    
+    void SlideSide(int direction)
+    {
+        // direction = -1 → gauche, 1 → droite
+        Vector3 moveDir = Quaternion.Euler(0, 30f * direction, 0) * transform.forward;
+        rb.MovePosition(rb.position + moveDir * moveSpeed * Time.deltaTime);
+    }
+
+    void TrySlideAroundObstacle()
+    {
+        // 🔹 Ray gauche / droite
+        Vector3 leftOrigin = transform.position + Vector3.up * 1f;
+        Vector3 rightOrigin = transform.position + Vector3.up * 1f;
+
+        bool leftBlocked = Physics.Raycast(leftOrigin, -transform.right, rayDistance, obstacleLayer);
+        bool rightBlocked = Physics.Raycast(rightOrigin, transform.right, rayDistance, obstacleLayer);
+
+        Debug.DrawRay(leftOrigin, -transform.right * rayDistance, Color.cyan);
+        Debug.DrawRay(rightOrigin, transform.right * rayDistance, Color.magenta);
+
+        if (!leftBlocked)
         {
-            StartSway();
+            StartCoroutine(SlideToSide(-transform.right));
         }
+        else if (!rightBlocked)
+        {
+            StartCoroutine(SlideToSide(transform.right));
+        }
+        else
+        {
+            Debug.Log($"{gameObject.name} : bloqué de partout !");
+        }
+    }
+
+    IEnumerator SlideToSide(Vector3 direction)
+    {
+        Debug.Log("Slide " + (direction == transform.right ? "→ droite" : "← gauche"));
+        isSliding = true;
+
+        Vector3 start = rb.position;
+        Vector3 end = start + direction * slideDistance;
+        float elapsed = 0f;
+
+        while (elapsed < slideDistance / slideSpeed)
+        {
+            rb.MovePosition(Vector3.Lerp(start, end, elapsed * slideSpeed / slideDistance));
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        isSliding = false;
     }
 
     void Jump()
@@ -118,36 +179,5 @@ public class AIController : MonoBehaviour
     {
         if (collision.contacts.Length > 0 && collision.contacts[0].normal.y > 0.5f)
             isJumping = false;
-    }
-
-    // ===== Sway Logic =====
-    void StartSway()
-    {
-        if (!isSwaying)
-        {
-            isSwaying = true;
-            swayTimer = swayDuration;
-            swayDirection = Random.value > 0.5f ? 1 : -1; // gauche ou droite aléatoire
-        }
-    }
-
-    void HandleSway()
-    {
-        if (!isSwaying) return;
-
-        swayTimer -= Time.deltaTime;
-        if (swayTimer <= 0f)
-        {
-            swayDirection *= -1;           // inverser direction
-            swayTimer = swayDuration;
-        }
-
-        // On arrête le sway si le chemin devant est libre
-        RaycastHit hit;
-        Vector3 lowRayOrigin = transform.position + Vector3.up * 0.3f;
-        if (!Physics.Raycast(lowRayOrigin, transform.forward, out hit, rayDistance, obstacleLayer))
-        {
-            isSwaying = false;
-        }
     }
 }
