@@ -8,6 +8,26 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Prototype.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 80b2b3fd47b9a7e45bfd3146e5c4f147
+  - enabled: 1
+    path: Assets/Scenes/Day_1.unity
+    guid: c185758bcdd72cd419636bd286d75210
+  - enabled: 1
+    path: Assets/Scenes/Day_2.unity
+    guid: f63d67953bcbb6242a11dcc72516036c
+  - enabled: 1
+    path: Assets/Scenes/Day_3.unity
+    guid: 68eb01e354156004db616ab18ea70f62
+  - enabled: 1
+    path: Assets/Scenes/MG_Dance.unity
+    guid: 6f765063b4118114cb471c4b7a934839
+  - enabled: 1
+    path: Assets/Scenes/MG_Race.unity
+    guid: a6aa5994451155a45987252c321d6bbd
+  - enabled: 1
+    path: Assets/Scenes/MG_SkippingRope.unity
+    guid: 0512a0f2894fd194096fd874494638fe
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_UseUCBPForAssetBundles: 0
