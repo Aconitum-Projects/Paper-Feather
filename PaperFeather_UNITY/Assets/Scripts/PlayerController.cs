@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,7 +22,11 @@ public class PlayerController : MonoBehaviour
 
     [Space(20)]
     [Header("Interaction")]
-    public KeyCode interactKey = KeyCode.E;
+    public Key interactKey = Key.E;
+
+    [Space(20)]
+    [Header("Look")]
+    public float mouseSensitivity = 0.08f;
 
     [Space(20)]
     [Header("Physique Saut")]
@@ -30,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
     [Space(20)]
     [Header("Crouch (accroupi)")]
-    public KeyCode crouchKey = KeyCode.LeftShift;
+    public Key crouchKey = Key.LeftShift;
     public float crouchScaleY = 0.5f;
     private Vector3 originalScale;
     private bool isCrouching = false;
@@ -55,16 +60,35 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        Keyboard keyboard = Keyboard.current;
+        Mouse mouse = Mouse.current;
+
         if (canRotate)
         {
-            float mouseX = Input.GetAxis("Mouse X");
+            float mouseX = mouse != null ? mouse.delta.x.ReadValue() * mouseSensitivity : 0f;
             transform.Rotate(Vector3.up, mouseX * rotationSpeed * Time.deltaTime);
         }
 
-        moveInput = canMove ? Input.GetAxisRaw("Vertical") : 0f;
-        rotationInput = canMove ? Input.GetAxisRaw("Horizontal") : 0f;
+        if (canMove && keyboard != null)
+        {
+            float forward = 0f;
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) forward += 1f;
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) forward -= 1f;
 
-        if (canJump && Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
+            float strafe = 0f;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) strafe += 1f;
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) strafe -= 1f;
+
+            moveInput = forward;
+            rotationInput = strafe;
+        }
+        else
+        {
+            moveInput = 0f;
+            rotationInput = 0f;
+        }
+
+        if (canJump && keyboard != null && keyboard.spaceKey.wasPressedThisFrame && jumpCount < maxJumps)
         {
             float appliedJumpForce = jumpForce;
             if (jumpCount == 1) appliedJumpForce *= 0.7f;
@@ -75,13 +99,13 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("isJumping", true);
         }
 
-        if (canDoInteraction && isInInteractZone && Input.GetKeyDown(interactKey))
+        if (canDoInteraction && isInInteractZone && keyboard != null && keyboard[interactKey] != null && keyboard[interactKey].wasPressedThisFrame)
             Debug.Log("Interaction déclenchée !");
 
         if (canCrouch)
         {
-            if (Input.GetKeyDown(crouchKey)) Crouch();
-            else if (Input.GetKeyUp(crouchKey)) StandUp();
+            if (keyboard != null && keyboard[crouchKey] != null && keyboard[crouchKey].wasPressedThisFrame) Crouch();
+            else if (keyboard != null && keyboard[crouchKey] != null && keyboard[crouchKey].wasReleasedThisFrame) StandUp();
         }
     }
 

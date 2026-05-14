@@ -1048,7 +1048,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 466.25
+  m_fontSize: 386.65
   m_fontSizeBase: 90
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1327,7 +1327,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1961218835}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e529c83164a132447918829a20edda9a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2010e676a198a3f4a995497c57c4719e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButton
   buttonAction: 1
@@ -1517,7 +1517,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 895381703627442784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e529c83164a132447918829a20edda9a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2010e676a198a3f4a995497c57c4719e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButton
   buttonAction: 2
@@ -1611,6 +1611,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3095831679025587838, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6878950494403081299, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
+      propertyPath: sceneToLoad
+      value: Day_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6878950494403081299, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
+      propertyPath: buttonAction
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6878950494403081299, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
@@ -1761,7 +1769,7 @@ PrefabInstance:
     - target: {fileID: 6878950494403081299, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
       propertyPath: canvasToShow
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 358423996}
     - target: {fileID: 6878950494403081299, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
       propertyPath: canvasesToHide.Array.size
       value: 1
@@ -1777,48 +1785,22 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7417212572970257389, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 1974172377324594874}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
 --- !u!224 &1974172377324594872 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3095831679025587838, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
   m_PrefabInstance: {fileID: 1974172377324594871}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1974172377324594873 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7417212572970257389, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
-  m_PrefabInstance: {fileID: 1974172377324594871}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1974172377324594874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1974172377324594873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e529c83164a132447918829a20edda9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MenuButton
-  buttonAction: 1
-  sceneToLoad: 
-  loadingCanvasPrefab: {fileID: 0}
-  canvasToShow: {fileID: 358423996}
-  canvasesToHide:
-  - {fileID: 549270866}
 --- !u!114 &1974172377324594878 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6878950494403081299, guid: 0d34e57cd15a9cd4a94f2a52a7f9305a, type: 3}
   m_PrefabInstance: {fileID: 1974172377324594871}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1974172377324594873}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e529c83164a132447918829a20edda9a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2010e676a198a3f4a995497c57c4719e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButton
 --- !u!224 &2883828252649647983 stripped

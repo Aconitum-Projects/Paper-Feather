@@ -316,13 +316,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7417212572970257389}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e529c83164a132447918829a20edda9a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2010e676a198a3f4a995497c57c4719e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuButton
-  buttonAction: 0
-  sceneToLoad: Day_1
-  loadingCanvas: {fileID: 0}
-  loadingSlider: {fileID: 0}
+  buttonAction: 1
+  sceneToLoad: 
+  loadingCanvasPrefab: {fileID: 0}
   canvasToShow: {fileID: 0}
   canvasesToHide: []
 --- !u!114 &2651843643137201332

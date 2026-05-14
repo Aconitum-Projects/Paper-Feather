@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.InputSystem;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class DialogueManager : MonoBehaviour
     [Header("Settings")]
     public float typeSpeed = 0.03f;
     public float fadeDuration = 0.3f;
-    public KeyCode nextLineKey = KeyCode.R;
+    public Key nextLineKey = Key.R;
 
     private DialogueSequence currentSequence;
     private int currentLineIndex;
@@ -104,7 +105,7 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(nextLineKey))
+        if (IsKeyPressedThisFrame(nextLineKey))
             NextLine();
     }
 
@@ -221,7 +222,7 @@ public class DialogueManager : MonoBehaviour
         else
             returnMainIndex = currentLineIndex + 1;
 
-        branchLines = choice.branchLines ?? new DialogueLine[0];
+        branchLines = choice.branchSequence != null ? choice.branchSequence.lines : new DialogueLine[0];
         inBranch = true;
         branchIndex = 0;
 
@@ -329,5 +330,15 @@ public class DialogueManager : MonoBehaviour
             choicesContainer.SetActive(false);
         
         fadeDuration /= 2f;
+    }
+
+    bool IsKeyPressedThisFrame(Key key)
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+            return false;
+
+        var keyControl = keyboard[key];
+        return keyControl != null && keyControl.wasPressedThisFrame;
     }
 }

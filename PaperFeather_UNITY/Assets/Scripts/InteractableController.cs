@@ -1,6 +1,6 @@
-using Cinemachine;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.InputSystem;
 
 public class InteractableController : MonoBehaviour
 {
@@ -18,7 +18,7 @@ public class InteractableController : MonoBehaviour
 
     [Space(20)]
     [Header("Interaction")]
-    public KeyCode interactKey = KeyCode.E;
+    public Key interactKey = Key.E;
     public DialogueSequence dialogueToStart;
 
     [Space(20)]
@@ -38,9 +38,12 @@ public class InteractableController : MonoBehaviour
 
     private void Update()
     {
-        if (uiVisible && Input.GetKeyDown(interactKey))
+        Keyboard keyboard = Keyboard.current;
+        var interactControl = keyboard != null ? keyboard[interactKey] : null;
+
+        if (uiVisible && interactControl != null && interactControl.wasPressedThisFrame)
         {
-            DialogueManager dm = FindObjectOfType<DialogueManager>();
+            DialogueManager dm = FindObjectsByType<DialogueManager>()[0];
             
             if (dm != null)
             {

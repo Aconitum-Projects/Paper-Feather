@@ -9,5 +9,5 @@ public class DialogueLine
 
     [Header("Choices (optionnel)")]
     public bool hasChoices;
-    public DialogueChoice[] choices;
+    [SerializeReference] public DialogueChoice[] choices;
 }
